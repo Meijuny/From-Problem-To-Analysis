@@ -9,6 +9,17 @@ table(ESS10$cntry)
 ##Subset the data for only Belgium
 BE_ESS10<-subset(ESS10, cntry %in% "BE")
 
+##select the columns necessary
+BE_ESS10<-select(BE_ESS10,agea,health,hlthhmp,rlgdgr,rlgatnd,pray)
+
+##clean the missing data for agea (999)/hlthhmp(7)/rlgdgr(88)/pray(77/88)
+BE_ESS10$agea<-as.numeric(sub(999,NA,BE_ESS10$agea))
+BE_ESS10$hlthhmp<-as.numeric(sub(7,NA,BE_ESS10$hlthhmp))
+BE_ESS10$rlgdgr<-as.numeric((sub(88,NA,BE_ESS10$rlgdgr)))
+BE_ESS10$pray<-as.numeric(sub(77,NA,BE_ESS10$pray))
+BE_ESS10$pray<-as.numeric(sub(88,NA,BE_ESS10$pray))
+
+
 ##Explore the variables related to age, health status, and religiosity
 ##Operationalize accordingly
 class(BE_ESS10$agea)
@@ -28,13 +39,9 @@ class(BE_ESS10$rlgdgr)
 ##Plotting
 #age
 table(BE_ESS10$agea)
-grep("999",BE_ESS10$agea)
-BE_ESS10_age<-select(BE_ESS10,agea)
-BE_ESS10_age<-arrange(BE_ESS10_age,agea)
-BE_ESS10_age<-BE_ESS10_age[1:1339,]
-hist(BE_ESS10_age,main="Distribution of Age", xlab="age",
-     ylab="frequency",col="orange",breaks = 40)
-abline(v=median(BE_ESS10_age),col="blue",lwd=2)
+hist(BE_ESS10$agea,main="Distribution of Age", xlab="age",
+     ylab="frequency",col="orange",breaks = 20)
+abline(v=median(BE_ESS10$agea),col="blue",lwd=2)
 
 
 #health status
@@ -42,17 +49,12 @@ barplot(table(BE_ESS10$healthCat),main = "distribution of health status",
         xlab="health status", ylab="frequency", col="lightblue")
 
 #religiosity
-BE_ESS10_religious<-select(BE_ESS10,rlgdgr)
-BE_ESS10_religious<-arrange(BE_ESS10_religious,rlgdgr)
-BE_ESS10_religious<-BE_ESS10_religious[1:1339,]
-hist(BE_ESS10_religious,main="distribution of religiosity", xlab="How religious are you",
+hist(BE_ESS10$rlgdgr,main="distribution of religiosity", xlab="How religious are you",
      ylab="frequnecy", col="lightgreen",xlim = c(-1,10),breaks = 11)
-abline(v=mean(BE_ESS10_religious),col="blue",lwd=2)
+abline(v=mean(BE_ESS10$rlgdgr),col="blue",lwd=2)
 
 
 ##ANOVA between health and age
-BE_ESS10<-arrange(BE_ESS10,agea)
-BE_ESS10<-BE_ESS10[1:1339,]
 table(BE_ESS10$healthCat)
 health_ageMean<-tapply(BE_ESS10$agea,BE_ESS10$healthCat,mean,na.rm=TRUE)
 health_ageMean
@@ -61,10 +63,6 @@ summary(health_age_ANOVA)
 pairwise.t.test(BE_ESS10$agea,BE_ESS10$healthCat, p.adjust.method = "bonferroni")
 
 ##Pearson correlation between religiosity and age
-BE_ESS10<-arrange(BE_ESS10,rlgdgr)
-tail(BE_ESS10$rlgdgr)
-dim(BE_ESS10)
-BE_ESS10<-BE_ESS10[1:1337,]
 cor.test(x=BE_ESS10$rlgdgr,BE_ESS10$agea,method=c("pearson"))
 
 ##ANOVA between religiosity and health
