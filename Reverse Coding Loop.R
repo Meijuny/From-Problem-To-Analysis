@@ -24,4 +24,5 @@ ReverseCoding_scale10<-function(data,VarName){
 }
 
 ##Example to use the function above
+##The variable must have quotation mark
 ESS_immi<-ReverseCoding_scale10(data = ESS10_BE_immigrant,VarName = "imwbcnt")
