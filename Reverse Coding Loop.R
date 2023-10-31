@@ -8,8 +8,7 @@ ReverseCoding_scale10<-function(data,VarName){
                         output[i] <- (-1) * data[i, VarName] + 10
                 }
         }
-        data<-cbind(data,output)
-        return(data)
+        return(output)
 }
 
 ##Meijun
@@ -19,10 +18,9 @@ ReverseCoding_scale10<-function(data,VarName){
                 ifelse(is.na(data[i,VarName]), output[i]<-NA, 
                        output[i]<-(-1)*data[i,VarName]+10)
         }
-        data<-cbind(data,output)
-        return(data)
+        return(output)
 }
 
 ##Example to use the function above
 ##The variable must have quotation mark
-ESS_immi<-ReverseCoding_scale10(data = ESS10_BE_immigrant,VarName = "imwbcnt")
+ESS10_BE$imwbcnt<-ReverseCoding_scale10(data = ESS10_BE,VarName = "imwbcnt")
